@@ -1,0 +1,181 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ campus|capfirst }} Campus Cafés</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Bootstrap CSS (for modal) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="container">
+      <header class="campus-list-header">
+        <h1>{{ campus|capfirst }} Campus Cafés</h1>
+        <p>Below are the cafes on {{ campus|capfirst }} campus. Click <strong>Menu</strong> to view each cafe's menu and prices.</p>
+      </header>
+
+      <main class="grid" role="main">
+        {% for cafe in cafes %}
+        <article class="cafecard" id="cafe-{{ cafe.id }}">
+          <div>
+            <h3>{{ cafe.name }}</h3>
+            <p>{{ cafe.intro }}</p>
+          </div>
+
+          <div class="meta">
+            <div><strong>Approx. ₹{{ cafe.price }}</strong></div>
+
+            <div class="btn-group">
+              {# Build an ID for the JSON script, then output the script with json_script #}
+              {% with cafe.id|stringformat:"s" as cafe_id_str %}
+              {% with "menu_items_"|add:cafe_id_str as menu_items_id and "menu_images_"|add:cafe_id_str as menu_images_id and "cafe_images_"|add:cafe_id_str as cafe_images_id %}
+                <script>
+                  console.log('cafe.id:', '{{ cafe.id }}');
+                  console.log('menu_images_id:', '{{ menu_images_id }}');
+                </script>
+                {{ cafe.menu_items|json_script:menu_items_id }}
+                {{ cafe.menu_images|json_script:menu_images_id }}
+                {{ cafe.cafe_images|json_script:cafe_images_id }}
+                <button class="btn-menu" type="button"
+                        data-bs-toggle="modal" data-bs-target="#menuModal"
+                        data-menu-id="{{ menu_images_id }}"
+                        data-cafe-name="{{ cafe.name|escapejs }}">
+                  Menu
+                </button>
+                <button class="btn-images" type="button"
+                        data-bs-toggle="modal" data-bs-target="#imageModal"
+                        data-images-id="{{ cafe_images_id }}"
+                        data-cafe-name="{{ cafe.name|escapejs }}">
+                  Images
+                </button>
+              {% endwith %}
+              {% endwith %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </main>
+
+      <p style="text-align:center;margin-top:28px"><a href="{% url 'home' %}" class="back-link">← Back to Explore</a></p>
+    </div>
+  </div>
+
+  <!-- Menu Modal (Bootstrap) -->
+  <div class="modal fade" id="menuModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius:18px;">
+        <div class="modal-header" style="border-bottom:none;">
+          <h5 class="modal-title" id="menuModalLabel">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="menuContent"></div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Modal (Bootstrap) -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="border-radius:18px;">
+        <div class="modal-header" style="border-bottom:none;">
+          <h5 class="modal-title" id="imageModalLabel">Images</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="imageContent" class="row"></div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (with Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // When modal opens, read the script ID from the button's data-menu-id and parse the JSON
+    const menuModal = document.getElementById('menuModal');
+    menuModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const menuId = button.getAttribute('data-menu-id'); // This should be 'menu_images_1'
+      const cafeName = button.getAttribute('data-cafe-name') || 'Menu';
+      
+      console.log('Menu button clicked. menuId:', menuId); // Log menuId
+      const scriptTag = document.getElementById(menuId); // This should find the script tag
+      console.log('Script tag found for menuId:', scriptTag); // Log scriptTag
+
+      let menuHtml = '';
+      try {
+        let menuImages = []; // This is initialized as empty
+        if (scriptTag) { // This condition should be true
+          console.log('scriptTag.textContent for menuId:', scriptTag.textContent); // Log content before parse
+          menuImages = JSON.parse(scriptTag.textContent); // This should parse the array
+          console.log('Parsed menuImages:', menuImages); // Log parsed array
+        }
+
+        if (!menuImages || menuImages.length === 0) { // THIS IS THE CULPRIT
+          menuHtml = '<p class="text-muted">No menu images available yet.</p>';
+        } else {
+          menuImages.forEach(function(imageUrl){
+            const fullImageUrl = '{% static "" %}' + imageUrl;
+            console.log('Loading menu image:', fullImageUrl);
+            menuHtml += '<div class="col-12 mb-3"><img src="' + fullImageUrl + '" class="img-fluid"></div>';
+          });
+        }
+      } catch(err) {
+        console.error('Error loading menu images:', err);
+        menuHtml = '<p class="text-danger">Unable to load menu images.</p>';
+      }
+
+      menuModal.querySelector('.modal-title').textContent = cafeName + ' — Menu Images';
+      menuModal.querySelector('#menuContent').innerHTML = '<div class="row">' + menuHtml + '</div>';
+    });
+
+    // When image modal opens, read the script ID from the button's data-images-id and parse the JSON
+    const imageModal = document.getElementById('imageModal');
+    imageModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const imagesId = button.getAttribute('data-images-id');
+      const cafeName = button.getAttribute('data-cafe-name') || 'Images';
+      const scriptTag = document.getElementById(imagesId);
+
+      console.log('Resolved STATIC_URL:', '{% static "" %}');
+      let imageHtml = '';
+      try {
+        let cafeImages = [];
+        if (scriptTag) {
+          cafeImages = JSON.parse(scriptTag.textContent);
+        }
+
+        if (!cafeImages || cafeImages.length === 0) {
+          imageHtml = '<p class="text-muted">No cafe images available yet.</p>';
+        } else {
+          cafeImages.forEach(function(imageUrl){
+            const fullImageUrl = '{% static "" %}' + imageUrl;
+            console.log('Loading cafe image:', fullImageUrl);
+            imageHtml += '<div class="col-md-4 mb-3"><img src="' + fullImageUrl + '" class="img-fluid"></div>';
+          });
+        }
+      } catch(err) {
+        console.error('Error loading cafe images:', err);
+        imageHtml = '<p class="text-danger">Unable to load cafe images.</p>';
+      }
+
+      imageModal.querySelector('.modal-title').textContent = cafeName + ' — Cafe Images';
+      imageModal.querySelector('#imageContent').innerHTML = imageHtml;
+    });
+  </script>
+</body>
+</html>

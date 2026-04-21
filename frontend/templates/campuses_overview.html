@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Campuses — DU Cafés</title>
+  <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+  <div class="page-container">
+
+    <!-- Lavender bordered heading box -->
+    <div class="heading-box">
+        <h1>Campuses</h1>
+    </div>
+
+    <p style="max-width:800px;margin:12px auto">Browse cafes by campus.</p>
+
+    <div class="campus-browser">
+
+      <div class="campus-card">
+        <h3>North Campus</h3>
+        <a href="{% url 'campus_list' 'north' %}">Browse</a>
+      </div>
+
+      <div class="campus-card">
+        <h3>South Campus</h3>
+        <a href="{% url 'campus_list' 'south' %}">Browse</a>
+      </div>
+
+      <div class="campus-card">
+        <h3>Off Campus</h3>
+        <a href="{% url 'campus_list' 'off' %}">Browse</a>
+      </div>
+
+    </div>
+
+    <p style="margin-top:30px">
+      <a href="{% url 'home' %}" class="back-link">← Back to Explore</a>
+    </p>
+
+  </div>
+</body>
+</html>

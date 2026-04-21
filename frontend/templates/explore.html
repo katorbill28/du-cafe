@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Explore DU Eating Spots</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <header class="hero">
+      <h1>Explore DU Cafés</h1>
+      <p class="lead">DU’s café culture is more than coffee — it’s where friends meet, study, and relax. Discover the vibe, price and specialties so you can pick the perfect spot.</p>
+      <nav class="nav">
+        <a href="{% url 'campuses' %}">Campuses</a> |
+        <a href="{% url 'finder' %}">Cafe Finder</a> |
+        <a href="{% url 'home' %}">Home</a>
+      </nav>
+    </header>
+
+    <!-- TYPES -->
+    <section class="types">
+      <div class="type-card"><h3>Aesthetic Cafés</h3><p>Artistic interiors & perfect ambience.</p></div>
+      <div class="type-card"><h3>Budget-Friendly</h3><p>Meals under ₹150 — wallet friendly.</p></div>
+      <div class="type-card"><h3>Study Spots</h3><p>Quiet corners & reliable Wi-Fi.</p></div>
+      <div class="type-card"><h3>Group Hangs</h3><p>Big tables & sharable dishes.</p></div>
+    </section>
+
+    <!-- TRENDING -->
+    <section class="trending-wrap">
+      <div class="trending-title">
+        <h3>Trending Cafés — recommended right now</h3>
+        <div style="font-size:14px;color:#666">Updated weekly • Local picks</div>
+      </div>
+
+      <div class="grid">
+        {% for cafe in highlights %}
+        <article class="card">
+          <div><h4>{{ cafe.name }}</h4><p>{{ cafe.intro }}</p></div>
+          <div class="meta">
+            <small>{{ cafe.campus|default:""|capfirst }}</small>
+            <div class="price">{{ cafe.price }}</div>
+          </div>
+          <div style="text-align:right;"><a class="btn" href="{% url 'cafe_detail' cafe.id %}">See details</a></div>
+        </article>
+        {% empty %}
+        <p>No trending cafés yet — add some!</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <a class="btn" href="{% url 'finder' %}">Open Cafe Finder</a>
+      <a class="btn secondary" href="{% url 'campuses' %}">Browse Campuses</a>
+    </div>
+
+    <footer>DU Cafe Finder • Introductory guide</footer>
+
+  </div>
+
+  <!-- RECOMMENDATIONS -->
+  <section class="recommend-section">
+    <h2 class="recommend-title">Student Recommendations</h2>
+    <p class="recommend-sub">Top picks loved by DU students.</p>
+
+    <div class="recommend-grid">
+      <div class="rec-card"><p class="rec-text">“Perfect study vibe!”</p><h4 class="rec-cafe">The Brew Room</h4><span>⭐ 4.8</span></div>
+      <div class="rec-card"><p class="rec-text">“Great snacks & quick service.”</p><h4 class="rec-cafe">Chai Box</h4><span>⭐ 4.6</span></div>
+      <div class="rec-card"><p class="rec-text">“Super aesthetic & cozy.”</p><h4 class="rec-cafe">Butter Fingers</h4><span>⭐ 4.7</span></div>
+    </div>
+
+    <!-- REVIEW FORM -->
+    <div class="review-input-section">
+      <h3>Write a Recommendation</h3>
+      <textarea class="review-textarea" placeholder="Share your café experience…"></textarea>
+      <input class="review-name" placeholder="Your Name (optional)">
+      <button class="submit-review-btn">Submit</button>
+    </div>
+
+  </section>
+
+</body>
+</html>
