@@ -1,21 +1,21 @@
 # du-cafe
-# ☕ DU Cafe Finder
+#  DU Cafe Finder
 
 A Django-based web application designed to help students explore and discover cafes around Delhi University campuses with ease. The platform allows users to search, filter, and view cafes based on preferences, making student hangouts more convenient.
 
 ---
 
-## 🚀 Features
+##  Features
 
-* 🔍 Search cafes by location or name
-* ⭐ View ratings and reviews
-* 📍 Filter cafes based on preferences (budget, distance, etc.)
-* 🧭 Simple and user-friendly interface
-* 📱 Responsive design for better usability
+*  Search cafes by location or name
+*  View ratings and reviews
+*  Filter cafes based on preferences (budget, distance, etc.)
+*  Simple and user-friendly interface
+*  Responsive design for better usability
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 * **Backend:** Django (Python)
 * **Frontend:** HTML, CSS
@@ -24,7 +24,7 @@ A Django-based web application designed to help students explore and discover ca
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 *(Add screenshots of your project here)*
 Example:
@@ -35,7 +35,7 @@ Example:
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 Follow these steps to run the project locally:
 
@@ -54,7 +54,7 @@ http://127.0.0.1:8000/
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 du-cafe-finder/
@@ -70,17 +70,16 @@ du-cafe-finder/
 ```
 
 ---
+##  Future Enhancements
 
-## 📌 Future Enhancements
-
-* 🔐 User authentication (login/signup)
-* 🗺️ Integration with Google Maps API
-* ❤️ Save favorite cafes
-* 📊 Advanced filtering & recommendations
+*  User authentication (login/signup)
+*  Integration with Google Maps API
+*  Save favorite cafes
+*  Advanced filtering & recommendations
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!
 If you'd like to improve this project:
@@ -92,7 +91,7 @@ If you'd like to improve this project:
 
 ---
 
-## 👩‍💻 Author
+##  Author
 
 **Torshi Kaninwal**
 BSc (Hons.) Computer Science | University of Delhi
